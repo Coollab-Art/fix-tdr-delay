@@ -11,23 +11,16 @@ static const LPCSTR registryPath = R"(SYSTEM\CurrentControlSet\Control\GraphicsD
 static auto set_key(LPCSTR key_name, DWORD key_value)
 {
     bool success{false};
-
     HKEY hKey;
-
-    // Try to open or create the registry key
     LONG openResult = RegCreateKeyExA(registry, registryPath, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_SET_VALUE, NULL, &hKey, NULL);
 
     if (openResult == ERROR_SUCCESS)
     {
         DWORD valueType = REG_DWORD;
-
-        // Set the value
         LONG setResult = RegSetValueExA(hKey, key_name, 0, valueType, reinterpret_cast<BYTE*>(&key_value), sizeof(key_value));
 
         if (setResult == ERROR_SUCCESS)
-        {
             success = true;
-        }
 
         // Don't forget to close the key after using it
         RegCloseKey(hKey);
@@ -51,9 +44,8 @@ auto get_key_value(LPCSTR key_name) -> DWORD
         LONG queryResult = RegQueryValueExA(hKey, key_name, NULL, &valueType, reinterpret_cast<LPBYTE>(&valueData), &valueSize);
 
         if (queryResult == ERROR_SUCCESS && valueType == REG_DWORD)
-        {
             value = valueData;
-        }
+        
         RegCloseKey(hKey);
     }
     return value;
@@ -109,13 +101,13 @@ auto set_minimum_delay(int delay_in_seconds) -> Result
     bool needs_to_restart{false};
     if (get_tdr_delay() < delay_in_seconds)
     {
-        bool b = set_tdr_delay(delay_in_seconds);
+        bool const b = set_tdr_delay(delay_in_seconds);
         success &= b;
         needs_to_restart |= b;
     }
     if (get_tdr_ddi_delay() < delay_in_seconds)
     {
-        bool b = set_tdr_ddi_delay(delay_in_seconds);
+        bool const b = set_tdr_ddi_delay(delay_in_seconds);
         success &= b;
         needs_to_restart |= b;
     }
