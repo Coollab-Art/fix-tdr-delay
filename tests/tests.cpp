@@ -1,18 +1,26 @@
-#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
-#include <doctest/doctest.h>
 #include <fix_tdr_delay/fix_tdr_delay.hpp>
+#include <iostream>
 
-// Check out doctest's documentation: https://github.com/doctest/doctest/blob/master/doc/markdown/tutorial.md
-
-int factorial(int number)
+int main()
 {
-    return number <= 1 ? number : factorial(number - 1) * number;
-}
-
-TEST_CASE("testing the factorial function")
-{
-    CHECK(factorial(1) == 1);
-    CHECK(factorial(2) == 2);
-    CHECK(factorial(3) == 6);
-    CHECK(factorial(10) == 3628800);
+    {
+        auto const backup = fix_tdr_delay::get_tdr_delay();
+        std::cout << "Current TdrDelay " << backup << '\n';
+        auto const success = fix_tdr_delay::set_tdr_delay(17);
+        if (!success)
+            std::cout << "Failed to set TdrDelay\n";
+        if (fix_tdr_delay::get_tdr_delay() != 17)
+            std::cout << "Failed to set TdrDelay to the correct value\n";
+        fix_tdr_delay::set_tdr_delay(backup);
+    }
+    {
+        auto const backup = fix_tdr_delay::get_tdr_ddi_delay();
+        std::cout << "Current TdrDdiDelay " << backup << '\n';
+        auto const success = fix_tdr_delay::set_tdr_ddi_delay(17);
+        if (!success)
+            std::cout << "Failed to set TdrDdiDelay\n";
+        if (fix_tdr_delay::get_tdr_ddi_delay() != 17)
+            std::cout << "Failed to set TdrDdiDelay to the correct value\n";
+        fix_tdr_delay::set_tdr_ddi_delay(backup);
+    }
 }
