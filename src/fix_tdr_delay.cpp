@@ -3,6 +3,7 @@
 namespace fix_tdr_delay {
 
 #if defined(_WIN32)
+#define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 
 static const HKEY   registry{HKEY_CURRENT_USER};
@@ -53,22 +54,22 @@ auto get_key_value(LPCSTR key_name) -> DWORD
 
 auto set_tdr_delay(int delay_in_seconds) -> bool
 {
-    return set_key("TdrDelay", delay_in_seconds);
+    return set_key("TdrDelay", static_cast<DWORD>(delay_in_seconds));
 }
 
 auto set_tdr_ddi_delay(int delay_in_seconds) -> bool
 {
-    return set_key("TdrDdiDelay", delay_in_seconds);
+    return set_key("TdrDdiDelay", static_cast<DWORD>(delay_in_seconds));
 }
 
 auto get_tdr_delay() -> int
 {
-    return get_key_value("TdrDelay");
+    return static_cast<int>(get_key_value("TdrDelay"));
 }
 
 auto get_tdr_ddi_delay() -> int
 {
-    return get_key_value("TdrDdiDelay");
+    return static_cast<int>(get_key_value("TdrDdiDelay"));
 }
 
 #else
