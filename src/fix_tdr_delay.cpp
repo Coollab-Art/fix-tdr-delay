@@ -1,10 +1,10 @@
 #include <fix_tdr_delay/fix_tdr_delay.hpp>
 
-namespace fix_tdr_delay {
-
 #if defined(_WIN32)
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
+
+namespace fix_tdr_delay {
 
 static const HKEY   registry{HKEY_CURRENT_USER};
 static const LPCSTR registryPath = R"(SYSTEM\CurrentControlSet\Control\GraphicsDrivers)";
@@ -18,7 +18,7 @@ static auto set_key(LPCSTR key_name, DWORD key_value)
     if (openResult == ERROR_SUCCESS)
     {
         DWORD valueType = REG_DWORD;
-        LONG setResult = RegSetValueExA(hKey, key_name, 0, valueType, reinterpret_cast<BYTE*>(&key_value), sizeof(key_value));
+        LONG  setResult = RegSetValueExA(hKey, key_name, 0, valueType, reinterpret_cast<BYTE*>(&key_value), sizeof(key_value));
 
         if (setResult == ERROR_SUCCESS)
             success = true;
@@ -46,7 +46,7 @@ auto get_key_value(LPCSTR key_name) -> DWORD
 
         if (queryResult == ERROR_SUCCESS && valueType == REG_DWORD)
             value = valueData;
-        
+
         RegCloseKey(hKey);
     }
     return value;
@@ -72,7 +72,11 @@ auto get_tdr_ddi_delay() -> int
     return static_cast<int>(get_key_value("TdrDdiDelay"));
 }
 
+} // namespace fix_tdr_delay
+
 #else
+
+namespace fix_tdr_delay {
 
 auto set_tdr_delay(int /* delay_in_seconds */) -> bool
 {
@@ -94,7 +98,11 @@ auto get_tdr_ddi_delay() -> int
     return 999;
 }
 
+} // namespace fix_tdr_delay
+
 #endif
+
+namespace fix_tdr_delay {
 
 auto set_minimum_delay(int delay_in_seconds) -> Result
 {
