@@ -4,7 +4,7 @@ set(WARNINGS_AS_ERRORS_FOR_FIX_TDR_DELAY OFF CACHE BOOL "ON iff you want to trea
 
 add_library(fix_tdr_delay)
 add_library(fix_tdr_delay::fix_tdr_delay ALIAS fix_tdr_delay)
-target_compile_features(fix_tdr_delay PUBLIC cxx_std_11)
+target_compile_features(fix_tdr_delay PUBLIC cxx_std_14)
 
 # ---Add source files---
 if(WARNINGS_AS_ERRORS_FOR_FIX_TDR_DELAY)
